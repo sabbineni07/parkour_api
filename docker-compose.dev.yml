@@ -38,7 +38,12 @@ services:
     volumes:
       - .:/app
     command: >
-      sh -c "python -c 'from app import create_app, db; app = create_app(); app.app_context().push(); db.create_all()' &&
+      sh -c "until PGPASSWORD=password psql -h db -U postgres -d parkour_db -c '\q' 2>/dev/null; do
+               echo 'Waiting for database...';
+               sleep 1;
+             done &&
+             echo 'Database is ready!' &&
+             python init_tables.py &&
              flask run --host=0.0.0.0 --port=5000 --debug"
 
 volumes:

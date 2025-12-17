@@ -10,3 +10,4 @@ To rollback a migration:
     flask db downgrade
 
 
+

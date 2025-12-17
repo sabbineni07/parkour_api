@@ -56,13 +56,23 @@ A Flask-based REST API built with PostgreSQL database and containerized with Doc
    docker-compose up --build
    ```
 
-5. **Initialize the database**
+5. **Database tables are automatically created on startup**
+   
+   The database tables are automatically created when the containers start. The startup process:
+   - Waits for the database to be ready
+   - Creates all tables (users, datasets, etc.)
+   - Creates the default admin user
+   
+   If you need to manually initialize or reset:
    ```bash
    # Using Docker
-   docker-compose -f docker-compose.dev.yml exec web flask init-db
+   docker compose -f docker-compose.dev.yml exec web flask init-db
    
-   # Or locally
-   flask init-db
+   # Or use Makefile
+   make init-db
+   
+   # Or run the init script directly
+   docker compose -f docker-compose.dev.yml exec web python init_tables.py
    ```
 
 6. **Access the application**

@@ -14,29 +14,39 @@
 2. **Start the application with Docker**
    ```bash
    # Development mode (with hot-reload)
-   docker-compose -f docker-compose.dev.yml up --build
+   docker compose -f docker-compose.dev.yml up --build
    
    # Or use Makefile
    make build
    make up
    ```
+   
+   **Note:** Database tables are automatically created on startup. The startup process will:
+   - Wait for the database to be ready
+   - Create all tables (users, datasets, etc.)
+   - Create the default admin user (username: `admin`, password: `admin123`)
 
-3. **Initialize the database**
+3. **Database tables are automatically created on startup**
+   
+   The tables are automatically created when the containers start. If you need to manually initialize:
    ```bash
-   # Wait for services to be ready, then run:
-   docker-compose -f docker-compose.dev.yml exec web flask init-db
+   # Using Docker
+   docker compose -f docker-compose.dev.yml exec web flask init-db
    
    # Or use Makefile
    make init-db
+   
+   # Or run the init script directly
+   docker compose -f docker-compose.dev.yml exec web python init_tables.py
    ```
 
 4. **Test the API**
    ```bash
    # Health check
-   curl http://localhost:5000/health
+   curl http://localhost:5001/health
    
    # Register a user
-   curl -X POST http://localhost:5000/api/auth/register \
+   curl -X POST http://localhost:5001/api/auth/register \
      -H "Content-Type: application/json" \
      -d '{
        "username": "testuser",
@@ -47,7 +57,7 @@
      }'
    
    # Login
-   curl -X POST http://localhost:5000/api/auth/login \
+   curl -X POST http://localhost:5001/api/auth/login \
      -H "Content-Type: application/json" \
      -d '{
        "username": "testuser",
@@ -88,8 +98,8 @@ make shell
 
 ## Access Points
 
-- **API**: http://localhost:5000
-- **Health Check**: http://localhost:5000/health
+- **API**: http://localhost:5001
+- **Health Check**: http://localhost:5001/health
 - **Database**: localhost:5432 (postgres/password)
 
 ## Troubleshooting
@@ -100,7 +110,17 @@ If port 5000 or 5432 is already in use, you can modify the ports in `docker-comp
 ### Database connection errors
 Make sure the database container is healthy before starting the web container. Check with:
 ```bash
-docker-compose -f docker-compose.dev.yml ps
+docker compose -f docker-compose.dev.yml ps
+```
+
+### Tables missing after startup
+If tables are missing, the automatic initialization may have failed. Try:
+```bash
+# Run the init script manually
+docker compose -f docker-compose.dev.yml exec web python init_tables.py
+
+# Or use the Flask command
+make init-db
 ```
 
 ### Reset database
@@ -108,6 +128,7 @@ docker-compose -f docker-compose.dev.yml ps
 make clean
 make build
 make up
+# Tables will be created automatically, but you can also run:
 make init-db
 ```
 

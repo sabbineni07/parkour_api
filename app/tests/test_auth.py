@@ -99,3 +99,4 @@ def test_update_profile(client, auth_headers):
     assert response.json['user']['last_name'] == 'Name'
 
 
+
