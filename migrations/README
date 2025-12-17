@@ -1,0 +1,12 @@
+This directory contains database migrations managed by Flask-Migrate.
+
+To create a new migration:
+    flask db migrate -m "Description of changes"
+
+To apply migrations:
+    flask db upgrade
+
+To rollback a migration:
+    flask db downgrade
+
+
