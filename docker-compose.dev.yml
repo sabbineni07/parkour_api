@@ -38,7 +38,7 @@ services:
     volumes:
       - .:/app
     command: >
-      sh -c "until PGPASSWORD=password psql -h db -U postgres -d parkour_db -c '\q' 2>/dev/null; do
+      sh -c "until PGPASSWORD=password psql -h db -U postgres -d parkour_db -c 'SELECT 1' 2>/dev/null; do
                echo 'Waiting for database...';
                sleep 1;
              done &&

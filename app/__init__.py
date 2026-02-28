@@ -87,9 +87,11 @@ def create_app():
     # Register blueprints
     from app.routes.auth import auth_bp
     from app.routes.datasets import datasets_bp
-    
+    from app.routes.udp import udp_bp
+
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(datasets_bp, url_prefix='/api/datasets')
+    app.register_blueprint(udp_bp, url_prefix='/api/udp')
     
     # Health check endpoint
     @app.route('/health')
